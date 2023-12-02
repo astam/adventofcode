@@ -1,7 +1,12 @@
+import copy
+
 def print_grid(grid):
     for line in grid:
         # print(line)
         print(''.join(line))
+
+def serialize(grid):
+    return ''.join([''.join(x) for x in grid])
 
 
 if __name__ == '__main__':
@@ -19,10 +24,38 @@ if __name__ == '__main__':
     # print([[y for y in x] for x in lines])
     # print([x for sublist in lines for x in sublist])
     grid = [[y for y in x] for x in lines]
+    grid_new = [['.' for y in x] for x in lines]
     # print(grid)
-    print_grid(grid)
-    for x in range(len(grid[0])):
-        for y in range(len(grid)):
-            print('{},{}:{}'.format(x,y,grid[x][y]))
-            if 
+    # print_grid(grid)
+    # print_grid(grid_new)
+    # grid_new = copy.deepcopy(grid)
+    # for _ in range(5):
+    # print(serialize(grid))
+    # print(serialize(grid_new))
+    while serialize(grid) != serialize(grid_new):
+        grid = copy.deepcopy(grid_new)
+        for x in range(1, len(grid[0]) - 1):
+            for y in range(1, len(grid) - 1):
+                # print('{},{}:{}'.format(x,y,grid[x][y]))
+                # # if grid[x][y] == 'L':
+                # print()
+                # print(grid[x - 1])
+                # print(grid[x])
+                # print(grid[x + 1])
+                # print()
+                # print(grid[x - 1][y - 1:y + 2])
+                adjacent = grid[x - 1][y - 1:y + 2] + grid[x + 1][y - 1:y + 2] + [grid[x][y - 1]] + [grid[x][y + 1]]
+                count_adjacent_occupied = len([x for x in adjacent if x == '#'])
+                # print()
+                # print(adjacent)
+                if grid[x][y] == 'L' and '#' not in adjacent:
+                    grid_new[x][y] = '#'
+                elif grid[x][y] == '#' and count_adjacent_occupied >= 4:
+                    grid_new[x][y] = 'L'
+
+        grid = copy.deepcopy(grid_new)
+        print_grid(grid_new)
+        print(serialize(grid))
+    # print_grid(grid)
+    # exit(0)
     
