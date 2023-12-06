@@ -19,8 +19,8 @@ if __name__ == '__main__':
     lines.insert(0, '.' * len(lines[0]))
     lines.append('.' * len(lines[0]))
     lines = ['.{}.'.format(x) for x in lines]
-    for line in lines:
-        print(line)
+    # for line in lines:
+    #     print(line)
     # exit()
     # print([[y for y in x] for x in lines])
     # print([x for sublist in lines for x in sublist])
@@ -40,8 +40,10 @@ if __name__ == '__main__':
         previous = current
         # print_grid(grid)
         grid_shadow = copy.deepcopy(grid)
-        for x in range(1, len(grid[0]) - 1):
-            for y in range(1, len(grid) - 1):
+        # for x in range(1, len(grid[0]) - 1):
+            # for y in range(1, len(grid) - 1):
+        for x in range(1, len(grid) - 1):
+            for y in range(1, len(grid[0]) - 1):
                 # print('{},{}:{}'.format(x,y,grid[x][y]))
                 # # if grid[x][y] == 'L':
                 # print()
@@ -50,6 +52,7 @@ if __name__ == '__main__':
                 # print(grid[x + 1])
                 # print()
                 # print(grid[x - 1][y - 1:y + 2])
+                # print(str(x) + ',' + str(y))
                 adjacent = grid_shadow[x - 1][y - 1:y + 2] + grid_shadow[x + 1][y - 1:y + 2] + [grid_shadow[x][y - 1]] + [grid_shadow[x][y + 1]]
                 count_adjacent_occupied = len([x for x in adjacent if x == '#'])
                 # print()
@@ -58,7 +61,9 @@ if __name__ == '__main__':
                     grid[x][y] = '#'
                 elif grid_shadow[x][y] == '#' and count_adjacent_occupied >= 4:
                     grid[x][y] = 'L'
-                print(serialize(grid))
+                # exit()
+        print(serialize(grid))
+        # exit()
         current = serialize(grid)
         # print(previous)
         # print(current)
