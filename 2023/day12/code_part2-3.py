@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
     results = p_umap(process_line, lines)
 
-    print(results)
+    print(sum(results))
 
 
     # with Pool(processes=8) as pool:
