@@ -1,0 +1,4 @@
+tqdm
+numba
+cuda-python
+p_tqdm
