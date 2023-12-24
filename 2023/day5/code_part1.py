@@ -1,6 +1,6 @@
 if __name__ == '__main__':
     input_file = '2023/day5/input_example.txt'
-    input_file = '2023/day5/input.txt'
+    # input_file = '2023/day5/input.txt'
     with open(input_file) as f:
         lines = [line.strip() for line in f.readlines()]
     # print('\n'.join(lines))
@@ -47,6 +47,6 @@ if __name__ == '__main__':
                 # print(next_item_number)
             print(next_item_name + ': ' + str(next_item_number))
         locations.append(next_item_number)
-        # exit()
+        exit()
     print(locations)
     print(min(locations))

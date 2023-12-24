@@ -1,4 +1,7 @@
 tqdm
-numba
-cuda-python
+# numba
+# cuda-python
 p_tqdm
+pysnooper
+pandas
+colorama

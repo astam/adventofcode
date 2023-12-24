@@ -1,5 +1,6 @@
-# https://www.youtube.com/watch?v=g3Ms5e7Jdqo
+# Mostly taken over from https://www.youtube.com/watch?v=g3Ms5e7Jdqo
 from functools import lru_cache
+import timeit
 
 @lru_cache(maxsize=None)
 def count(cfg, nums):
@@ -8,6 +9,9 @@ def count(cfg, nums):
     
     if nums == ():
         return 0 if "#" in cfg else 1
+    
+    if (sum(nums) + len(nums) - 1) > len(cfg):
+        return 0
     
     result = 0
 
@@ -28,6 +32,7 @@ if __name__ == '__main__':
         lines = [line.strip() for line in f.readlines()]
     # print(lines)
 
+    start = timeit.default_timer()
     total = 0
     for line in lines:
         cfg, nums = line.split()
@@ -38,3 +43,4 @@ if __name__ == '__main__':
         total += count(cfg, nums)
 
     print(total)
+    print("The difference of time is :", timeit.default_timer() - start)

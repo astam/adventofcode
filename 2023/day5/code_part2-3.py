@@ -55,7 +55,8 @@ if __name__ == '__main__':
     # for seed_start, seed_range in seed_ranges:
     #     print(str(seed_start) + '->' + str(seed_start + seed_range))
     #     find_lowest_location(seed_start, seed_range)
-
+    
+    exit()
     with Pool(1) as p:
         r = list(tqdm.tqdm(p.imap(find_lowest_location, seed_ranges), total=len(seed_ranges)))
         print(r)

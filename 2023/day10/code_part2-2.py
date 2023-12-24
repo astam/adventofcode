@@ -1,32 +1,13 @@
 import sys
 from colorama import Fore, Back, Style
 
-# class SubPosition(Position):
-#     pass
-
-
-
-
-
 class Position():
     def __init__(self, character, x, y) -> None:
         self.character = character
         self.x = x
         self.y = y
         self.distance = -1
-        self.build_subgrid()
-        
-    def build_subgrid(self):
-        match self.character:
-            case '.': subgrid_string = [['.........']]
-            case 'S': subgrid_string = [['....S....']]
-            case '|': subgrid_string = [['.|..|..|.']]
-            case '-': subgrid_string = [['...___...']]
-            case 'L': subgrid_string = [['.|..L_...']]
-            case 'J': subgrid_string = [['.|._J....']]
-            case '7': subgrid_string = [['..._7..|.']]
-            case 'F': subgrid_string = [['....F_.|.']]
-        self.subgrid = 
+        self.outside = False
 
     def set_neighbours(self, north, south, east, west):
         self.north = north
@@ -51,6 +32,15 @@ class Position():
             case 'F': output_character = u'\u250C' 
         return output_character
     
+    def find_outsides(self):
+        self.outside = True
+        self.character = 'O'
+        # print(self.x, self.y)
+        for pos in [self.north, self.south, self.east, self.west]:
+            # print(pos)
+            if pos and not pos.outside and pos.distance == -1:
+                pos.find_outsides() 
+    
     def str_neighbours(self) -> str:
         output = '\n{}\n{}\n {} \n{}{}{}\n {} \n'.format(
             self.__class__.__name__,
@@ -66,6 +56,7 @@ class Position():
     @classmethod
     def get_position(cls, character, x, y):
         match character:
+            case ' ': return Position(character, x, y)
             case '.': return Ground(character, x, y)
             case 'S': return Start(character, x, y)
             case '|': return NorthSouth(character, x, y)
@@ -158,97 +149,79 @@ class SouthEast(Pipe):
             self.east.follow(self.distance + 1)
 
 def print_grid(grid):
-    for x in range(1,len(grid)-1):
-        for y in range(1,len(grid[x])-1):
+    for x in range(len(grid)):
+        for y in range(len(grid[x])):
             print(grid[x][y], end='')
         print()
 
 if __name__ == '__main__':
-    input_file = '2023/day10/input_example.txt'
-    # input_file = '2023/day10/input.txt'
+    input_file = '2023/day10/input_example3.txt'
+    input_file = '2023/day10/input.txt'
     with open(input_file) as f:
         lines = [line.strip() for line in f.readlines()]
     # print('\n'.join(lines))
 
-    sys.setrecursionlimit(20000)
+    sys.setrecursionlimit(200000)
     
     lines.insert(0, '.' * len(lines[0]))
     lines.append('.' * len(lines[0]))
     lines = ['.{}.'.format(x) for x in lines]
-    grid = [[y for y in x] for x in lines]
-    # print('\n'.join([''.join(x) for x in grid]))
-
+    grid = [[' ' for y in range(len(lines[0]) * 3)] for x in range(len(lines) * 3)]
+    # grid = [[y for y in x] for x in lines]
     for x in range(len(lines)):
+        for y in range(len(lines[0])):
+            grid[x * 3 + 1][y * 3 + 1] = lines[x][y]
+            if lines[x][y] in 'S|LJ':
+                grid[x * 3 + 0][y * 3 + 1] = '|'
+            if lines[x][y] in 'S|7F':
+                grid[x * 3 + 2][y * 3 + 1] = '|'
+            if lines[x][y] in 'S-7J':
+                grid[x * 3 + 1][y * 3 + 0] = '-'
+            if lines[x][y] in 'S-LF':
+                grid[x * 3 + 1][y * 3 + 2] = '-'
+
+    # print('\n'.join([''.join(x) for x in grid])) 
+    # exit()
+
+    for x in range(len(grid)):
         # grid.append([])
-        for y in range(len(lines[x])):   
+        for y in range(len(grid[x])):   
             grid[x][y] = Position.get_position(grid[x][y], x, y)
 
-    height = len(lines)
-    width = len(lines[0])
+    height = len(grid)
+    width = len(grid[0])
     # print('\n'.join([''.join(x) for x in grid]))
-    print_grid(grid)
-    exit()
+    # print_grid(grid)
+    # exit()
 
     # for x in range(len(grid)):
     #     for y in range(len(grid[x])):
     #         print(grid[x][y], end='')
     #     print('')
 
-    for x in range(1,len(grid)-1):
-        for y in range(1,len(grid[x])-1):
-            north = grid[x - 1][y]
-            south = grid[x + 1][y]
-            west = grid[x][y - 1]
-            east = grid[x][y + 1]
+    for x in range(len(grid)):
+        for y in range(len(grid[x])):
+            north, south, west, east = None, None, None, None
+            if 1 <= x < len(grid):
+                north = grid[x - 1][y]
+            if 1 <= y < len(grid[x]):
+                west = grid[x][y - 1]
+            if 0 <= x < len(grid) - 1:
+                south = grid[x + 1][y]
+            if 0 <= y < len(grid[x]) - 1:
+                east = grid[x][y + 1]
             grid[x][y].set_neighbours(north, south, east, west)
             # print(grid[x][y], end='')
             if grid[x][y].character == 'S':
                 start = grid[x][y]
         # print()
     start.follow()
-    # print_grid(grid)
-    # exit()
-
-    for x in range(1, height - 1):
-        outside = True
-        y = 1
-        while grid[x][y].character in ' .' and y < width - 1:
-            # print_grid(grid)
-            # print()
-            grid[x][y].character = ' '
-            y += 1
-
-    for x in range(1, height - 1):
-        outside = True
-        y = width - 1
-        while grid[x][y].character in ' .' and y > 0:
-            # print_grid(grid)
-            # print()
-            grid[x][y].character = ' '
-            y -= 1
-
-    for y in range(1, width - 1):
-        outside = True
-        x = 1
-        while grid[x][y].character in ' .' and x < height - 1:
-            # print_grid(grid)
-            # print()
-            grid[x][y].character = ' '
-            x += 1
-    
-    for y in range(1, width - 1):
-        outside = True
-        x = height - 1
-        while grid[x][y].character in ' .' and x > 0:
-            # print_grid(grid)
-            # print()
-            grid[x][y].character = ' '
-            x -= 1
+    grid[0][0].find_outsides()
     print_grid(grid)
 
     count = 0
-    for x in range(1, height - 1):
-        for y in range(1, width - 1):
-            if grid[x][y].character == '.':
+    for x in range(1, height + 1, 3):
+        for y in range(1, width + 1, 3):
+            if not grid[x][y].outside and grid[x][y].distance == -1:
                 count += 1
     print(count)
