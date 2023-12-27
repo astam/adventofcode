@@ -27,6 +27,7 @@ if __name__ == '__main__':
             # print()
     diff =  timeit.default_timer() - starttime
     print("The time difference is :", diff)
+    # print_patform(platform)
 
     weight = len(platform)
     load = 0
