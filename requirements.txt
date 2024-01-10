@@ -5,3 +5,6 @@ p_tqdm
 pysnooper
 pandas
 colorama
+matplotlib
+python-statemachine
+pydot
