@@ -5,8 +5,8 @@ p_tqdm
 pysnooper
 pandas
 colorama
-icecream
 matplotlib
 python-statemachine
 pydot
 icecream
+memoization
